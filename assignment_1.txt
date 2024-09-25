@@ -1,0 +1,108 @@
+#S table insert into
+INSERT INTO `s` (`sno`, `sname`, `s_status`, `s_city`) VALUES 
+		('s1', 'Smith', '20', 'london'), 
+		('s2', 'Jones', '10', 'paris');
+INSERT INTO `s` (`sno`, `sname`, `s_status`, `s_city`) VALUES
+		('s3', 'Blake', '10', 'paris'), 
+		('s4', 'Clark ', '20', 'london');
+
+#P table insert into
+INSERT INTO `p` (`pno`, `pname`, `color`, `weight`, `p_city`) VALUES 
+		('p1', 'Nut', 'red', '12', 'london'),
+		 ('p2', 'Bolt', 'green', '17', 'paris');
+INSERT INTO `p` (`pno`, `pname`, `color`, `weight`, `p_city`) VALUES
+		 ('p5', 'Cam', 'blue', '12', 'paris'),
+		 ('p6', 'Cag', 'red', '19', 'london');
+
+create TABLE sp(sno char(3),pno char(3),qty int, PRIMARY key (sno,pno), Foreign key(sno)REFERENCES s(sno) , FOREIGN KEY(pno) REFERENCES p(pno));
+
+#sp table insert into 
+
+INSERT INTO `sp` (`sno`, `pno`, `qty`) VALUES
+		('s1','p1','300'),
+        ('s1','p2','200'),
+        ('s1','p3','400'),
+        ('s1','p4','200'),
+        ('s1','p5','100'),
+        ('s1','p6','100'),
+        ('s2','p1','300'),
+        ('s2','p2','400'),
+		('s3', 'p2', '300'), 
+		('s4', 'p2', '200'), 
+		('s4', 'p4', '300'), 
+		('s4', 'p5', '400');
+
+
+===========assignment 2 =========================
+
+1.SELECT * 
+	FROM p 
+   	WHERE p_city='london';
+
+2.SELECT pname,pno,color 
+	FROM p 
+    	where color='red';
+
+3.SELECT pname,weight 
+	FROM p 
+   	WHERE weight= (SELECT MAX(weight)FROM p);
+
+4.SELECT pno,pname,weight 
+	FROM p 
+    	WHERE weight < (SELECT MAX(weight) FROM p) ORDER BY weight DESC LIMIT 1;
+
+5.SELECT DISTINCT s.sname,s.s_city 
+	FROM s,sp 
+    	where sp.sno= s.sno 
+    	and sp.qty>200;
+
+===============assignment 3===============
+
+6.SELECT sp.qty,p.weight
+	 FROM sp JOIN p on sp.pno=p.pno
+	 WHERE weight=(SELECT max(weight)from p);
+
+
+7.SELECT DISTINCT s.sname,sp.qty,p.color 
+	FROM s,p,sp 
+	WHERE sp.pno= p.pno and p.color="red"
+	 group by sname;
+
+8.SELECT DISTINCT s.sno , s.s_status,p.p_city,sp.qty
+	FROM s,p,sp
+	WHERE sp.pno=p.pno and 
+	sp.sno=s.sno and 
+	s.s_status<30
+	GROUP BY sname;
+
+9.SELECT sno,sum(qty) from sp GROUP BY sno;
+
+10.SELECT sum(qty),p.pname
+	FROM p,sp
+	WHERE sp.pno=p.pno
+	GROUP BY pname;
+
+
+===============assignment 4===============
+
+11.   SELECT DISTINCT p.pname,sum(sp.qty) 
+	from p,sp 
+	WHERE p.pno=sp.pno 
+	GROUP BY p.pname;
+
+
+12.   SELECT s.sname,sum(sp.qty) 
+	from s,sp 
+	where s.sno=sp.sno 
+	and s.sno<'s4';
+
+3   SELECT s.sno, s.sname,sum(sp.qty) 
+	from s,sp 
+	where s.sno < "s4" 
+	and s.sno = sp.sno GROUP by sno;
+
+13.   SELECT s.sname, s.sno,s.s_status,SUM(sp.qty)
+	 from s,sp 
+	 WHERE s.sno=sp.sno
+	 AND s.s_status=20
+	 GROUP BY sno;
